@@ -2,6 +2,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+# Path logic: Assumes this script is in the RepoRoot
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = (Resolve-Path $ScriptDir).Path
 
@@ -31,36 +32,43 @@ function Fail-WithHelp([string]$Message) {
 }
 
 function Invoke-SubScript([string]$ScriptName, [string[]]$ExtraArgs) {
+    # Sub-scripts must be in scripts\powershell\ relative to the root
     $ScriptPath = Join-Path $RepoRoot "scripts\powershell\$ScriptName"
+    
     if (-not (Test-Path $ScriptPath)) {
-        Fail-WithHelp "Missing script: $ScriptPath"
+        Fail-WithHelp "Missing script: $ScriptPath. Ensure you have created the 'scripts\powershell\' folder structure."
     }
 
     try {
         & $ScriptPath @ExtraArgs
     } catch {
+        # Improved error reporting to debug permission/access issues
+        Write-Host "`n--- System Error Details ---" -ForegroundColor Red
+        Write-Host "Message: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Check your PowerShell ExecutionPolicy or folder permissions.`n" -ForegroundColor Gray
+        
         Fail-WithHelp "Command failed: $ScriptName"
     }
 }
 
 function Main {
-    param([string[]]$Args)
+    # Renamed parameter to avoid shadowing the automatic $Args variable
+    param([string[]]$CommandArgs) 
 
     $cmd = "help"
     $rest = @()
 
-    if ($Args.Count -gt 0) {
-        $cmd = $Args[0]
-        if ($Args.Count -gt 1) {
-            $rest = $Args[1..($Args.Count - 1)]
-        }
+    if ($CommandArgs.Count -gt 0) {
+        $cmd = $CommandArgs[0]
+        # Fixed range bug: Select-Object correctly handles single-argument calls
+        $rest = $CommandArgs | Select-Object -Skip 1
     }
 
     switch ($cmd) {
         "init" {
             Invoke-SubScript -ScriptName "install.ps1" -ExtraArgs $rest
         }
-        "install" {  # alias for compatibility
+        "install" { 
             Invoke-SubScript -ScriptName "install.ps1" -ExtraArgs $rest
         }
         "start" {
@@ -69,16 +77,7 @@ function Main {
         "launcher" {
             Invoke-SubScript -ScriptName "install-launcher.ps1" -ExtraArgs $rest
         }
-        "install-launcher" {  # alias for compatibility
-            Invoke-SubScript -ScriptName "install-launcher.ps1" -ExtraArgs $rest
-        }
         "help" {
-            Show-Usage
-        }
-        "-h" {
-            Show-Usage
-        }
-        "--help" {
             Show-Usage
         }
         default {
@@ -87,4 +86,5 @@ function Main {
     }
 }
 
-Main -Args $args
+# Pass the script's arguments into the Main function
+Main -CommandArgs $args
