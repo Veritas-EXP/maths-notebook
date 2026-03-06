@@ -1,2 +1,4 @@
 .venv/
 venv/
+user-work/
+.ipynb_checkpoints/
