@@ -6,6 +6,7 @@ Main libraries:
 - `numpy`
 - `sympy`
 - `matplotlib`
+- `scipy`
 
 Primary target: **Linux Mint**
 Secondary support: **Windows** (via `.bat` launcher)
