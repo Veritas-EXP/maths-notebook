@@ -1,4 +1,8 @@
 .venv/
 venv/
-user-work/
+__pycache__/
 .ipynb_checkpoints/
+
+# Student notebooks and local assignment work.
+user-work/*
+!user-work/README.md

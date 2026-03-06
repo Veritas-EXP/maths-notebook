@@ -1,189 +1,178 @@
-# Math Notebook (Homeschool Setup)
+# Math Notebook
 
-A simple JupyterLab setup for homeschooled students (ages 10-14) to learn practical math tools with Python instead of proprietary software.
+Simple, homeschool-friendly JupyterLab setup for math learning (ages 10-14) using open Python tools instead of proprietary software.
 
-Main libraries:
+Primary target: **Linux Mint**  
+Secondary target: **Windows** (PowerShell support planned)
+
+---
+
+## Goals
+
+- Make setup easy and repeatable.
+- Keep student work separate from teacher material.
+- Start Jupyter with one command (or desktop launcher).
+- Teach practical math tools: numerical, symbolic, and plotting workflows.
+
+---
+
+## Current Status
+
+Implemented now:
+- Linux installer script (`scripts/bash/install.sh`)
+- Linux start script (`scripts/bash/start.sh`)
+- Linux desktop launcher installer (`scripts/bash/install-launcher.sh`)
+- Unified Linux command entrypoint (`build-helper.sh`)
+- Dependency file (`dependencies/requirements.txt`)
+
+Planned next:
+- Windows PowerShell entrypoint (`build-helper.ps1`)
+- Windows PowerShell install/start scripts
+- Initial teacher example notebooks under `notebooks/examples/`
+- Shared helper module at `python/math_tools.py`
+
+---
+
+## Python Baseline
+
+This project is locked to **Python 3.12.x**.
+
+Why:
+- Stable ecosystem support for Jupyter + scientific stack.
+- Lower setup friction on Linux Mint.
+- Good balance of stability and modern features.
+
+---
+
+## Core Packages (and Why)
+
 - `numpy`
-- `sympy`
-- `matplotlib`
+  - Fast numeric arrays and matrix-style calculations.
+
 - `scipy`
+  - Scientific utilities (equation solving, interpolation, optimization, stats helpers).
 
-Primary target: **Linux Mint**
-Secondary support: **Windows** (via `.bat` launcher)
+- `sympy`
+  - Symbolic math (exact expressions, algebra simplification, derivatives/integrals).
 
-## Project Goals
+- `matplotlib`
+  - Graphing functions and plotting assignment figures.
 
-- Keep setup easy for non-technical users.
-- Separate teacher examples from student assignments.
-- Make daily usage one click (desktop launcher), not terminal-heavy.
-- Build basic computational math habits with open tools.
+- `jupyterlab`
+  - Main notebook interface for daily student use.
 
-## Planned Repository Structure
+- `ipykernel`
+  - Connects the project `.venv` to Jupyter kernels.
+
+- `pandas` *(optional but recommended)*
+  - Table/data workflows for statistics notebooks.
+
+- `ipympl` *(optional)*
+  - Interactive matplotlib backend in JupyterLab.
+
+---
+
+## Repository Layout (Current Plan)
 
 ```text
 math-notebook/
+├── AGENTS.md
 ├── README.md
-├── requirements.txt
-├── install.sh
-├── start.sh
-├── launchers/
-│   ├── install_launcher_linux.sh
-│   └── start_math_notebook.bat
+├── .gitignore
+├── build-helper.sh
+├── build-helper.ps1                 # planned
+│
+├── dependencies/
+│   └── requirements.txt
+│
+├── scripts/
+│   ├── bash/
+│   │   ├── install.sh
+│   │   ├── start.sh
+│   │   └── install-launcher.sh
+│   └── powershell/                  # planned
+│       ├── install.ps1
+│       ├── start.ps1
+│       └── install-launcher.ps1
+│
 ├── notebooks/
-│   └── examples/
-│       ├── calculator.ipynb
-│       ├── algebra.ipynb
-│       ├── graphing.ipynb
-│       └── statistics.ipynb
+│   └── examples/                    # planned content
+│
 ├── python/
-│   └── math_tools.py
-├── user-work/
-│   └── README.md
-└── .gitignore
+│   └── math_tools.py                # planned
+│
+└── user-work/
+    └── ... student notebooks
 ```
 
-## Folder Intent
+---
 
-- `notebooks/examples/`: teacher-owned reference notebooks.
-- `user-work/`: student notebooks, assignments, rough work.
-- `python/math_tools.py`: reusable helper functions.
-- `launchers/`: scripts for desktop launch shortcuts.
+## Linux Mint Quick Start
 
-## Why This Structure
-
-- Students avoid accidental edits to teacher templates.
-- Work is easy to find (`user-work/` behaves like a school documents folder).
-- The setup remains transparent: plain Python environment + JupyterLab.
-
-## Requirements
-
-- Python 3.10+ (3.11 recommended)
-- Linux Mint (or compatible Linux)
-- A modern browser
-
-## Core Python Packages (and Why We Use Them)
-
-This project uses a small set of core packages so students can learn practical math workflows in one place.
-
-- `numpy`
-  - Purpose: fast numerical arrays and core numerical operations.
-  - Typical use: vectors, matrices, and numeric calculations.
-
-- `scipy`
-  - Purpose: scientific tools built on top of NumPy.
-  - Typical use: equation solving, optimization, interpolation, and stats helpers.
-
-- `sympy`
-  - Purpose: symbolic mathematics (exact expressions, not only decimal approximations).
-  - Typical use: simplify/factor expressions, symbolic derivatives and integrals.
-
-- `matplotlib`
-  - Purpose: plotting and graphing.
-  - Typical use: graph functions, visualize data, produce assignment figures.
-
-- `pandas` *(optional but recommended)*
-  - Purpose: table/data handling.
-  - Typical use: statistics datasets and simple data analysis.
-
-- `jupyterlab`
-  - Purpose: the notebook interface students use every day.
-  - Typical use: combine explanations, calculations, and plots in one document.
-
-- `ipykernel`
-  - Purpose: connects the project Python environment to Jupyter.
-  - Typical use: ensures notebooks run with the correct `.venv` packages.
-
-- `ipympl` *(optional)*
-  - Purpose: interactive Matplotlib backend in JupyterLab.
-  - Typical use: zooming and panning graphs during lessons.
-
-### Why this set?
-
-- Covers the full learning loop: calculate, reason symbolically, visualize, and document.
-- Keeps setup lightweight and stable on Linux Mint.
-- Builds skills that transfer to higher-level STEM study.
-
-## Linux Mint Setup (First Time)
-
-From the project root:
+From repo root:
 
 ```bash
-bash install.sh
+./build-helper.sh init
+./build-helper.sh start
 ```
 
-This should:
-1. Create `.venv`
-2. Upgrade `pip`
-3. Install dependencies from `requirements.txt`
-4. Register a Jupyter kernel for this project (optional but recommended)
-
-## Linux Mint Daily Start
-
-From the project root:
+Install launcher (one-time):
 
 ```bash
-bash start.sh
+./build-helper.sh launcher
 ```
 
-Expected behavior:
-- Activates `.venv`
-- Starts JupyterLab
-- Opens browser automatically
-- Uses `user-work/` as default place for student files
+---
 
-## Linux Mint Desktop Launcher (No Terminal)
+## `build-helper.sh` Commands
 
-Install launcher once:
+- `init`
+  - Creates/updates `.venv`
+  - Installs dependencies from `dependencies/requirements.txt`
+  - Registers Jupyter kernel `Python (math-notebook)`
 
-```bash
-bash launchers/install_launcher_linux.sh
-```
+- `start`
+  - Starts JupyterLab with project root visible
+  - Opens directly in `user-work/`
+  - Makes local `python/` helpers importable
 
-Expected result:
-- Creates a desktop/menu entry (via `.desktop` file)
-- Students start Math Notebook by clicking the app icon
+- `launcher`
+  - Installs Linux desktop/menu launcher for one-click startup
 
-## Windows Quick Start (Basic Support)
+- `help`
+  - Prints command usage
 
-From project root in Command Prompt:
+---
 
-```bat
-py -m venv .venv
-.\.venv\Scripts\python -m pip install --upgrade pip
-.\.venv\Scripts\pip install -r requirements.txt
-launchers\start_math_notebook.bat
-```
+## Student vs Teacher Folders
 
-You can make a desktop shortcut to `launchers\start_math_notebook.bat`.
+- `notebooks/examples/` = teacher-owned reference notebooks
+- `user-work/` = student assignments and personal notebooks
 
-## Student Workflow
+Recommended workflow:
+1. Open an example notebook.
+2. Copy it into `user-work/`.
+3. Solve tasks in the copied version.
 
-1. Open Math Notebook.
-2. Browse `notebooks/examples/` for lesson examples.
-3. Create or copy notebooks into `user-work/`.
-4. Save work frequently.
+---
 
-## Teacher Workflow
+## Version Control Policy
 
-- Keep canonical lessons in `notebooks/examples/`.
-- Ask students to copy notebooks into `user-work/` before editing.
-- Keep shared helper functions in `python/math_tools.py`.
+Student work should not be committed by default.
 
-## Version Control Note
-
-`user-work/` should be ignored in git so student files do not pollute commits.
-
-Typical `.gitignore` pattern:
+Suggested `.gitignore`:
 
 ```gitignore
+.venv/
+__pycache__/
+.ipynb_checkpoints/
 user-work/*
 !user-work/README.md
 ```
 
-## Suggested Next Build Steps
+---
 
-1. Create `install.sh` and `start.sh`.
-2. Add starter notebooks in `notebooks/examples/`.
-3. Add `python/math_tools.py` with beginner-friendly utilities.
-4. Add Linux Mint launcher installer script.
-5. Add Windows `.bat` launcher.
+## Notes for Windows
+
+Windows support will use **PowerShell** (`build-helper.ps1`) rather than `.bat` logic.  
+The behavior will match Linux commands: `init`, `start`, `launcher`.
