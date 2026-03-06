@@ -14,10 +14,15 @@ Usage:
   ./build-helper.sh <command> [args]
 
 Commands:
-  init, install       Create/update .venv and install dependencies
-  start               Start JupyterLab
-  install-launcher    Install Linux desktop launcher
-  help                Show this help
+  init                Create/update .venv and install all dependencies
+  start               Start JupyterLab (opens in user-work)
+  launcher            Install desktop app launcher on Linux
+  help                Show this help text
+
+Examples:
+  ./build-helper.sh init
+  ./build-helper.sh start
+  ./build-helper.sh launcher
 EOF
 }
 
@@ -53,7 +58,7 @@ main() {
     start)
       run_script "start.sh" "$@"
       ;;
-    install-launcher)
+    launcher|install-launcher)
       run_script "install-launcher.sh" "$@"
       ;;
     help|-h|--help)
