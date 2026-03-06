@@ -172,7 +172,94 @@ user-work/*
 
 ---
 
-## Notes for Windows
+## Windows Setup (PowerShell)
 
-Windows support will use **PowerShell** (`build-helper.ps1`) rather than `.bat` logic.  
-The behavior will match Linux commands: `init`, `start`, `launcher`.
+This project supports Windows through `build-helper.ps1` and scripts in `scripts/powershell/`.
+
+### 1) Install Python 3.12 (if missing)
+
+Check if Python launcher is available:
+
+```powershell
+py -3.12 --version
+```
+
+If that fails, install Python 3.12 with `winget`:
+
+```powershell
+winget install --id Python.Python.3.12 --source winget --accept-source-agreements --accept-package-agreements
+```
+
+After install, close and reopen PowerShell, then verify again:
+
+```powershell
+py -3.12 --version
+```
+
+### 2) If `py` still not found, add Python to PATH
+
+Run this in PowerShell (adjust `Python312` if your install path differs):
+
+```powershell
+$pyRoot = "$env:LocalAppData\Programs\Python\Python312"
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+
+if ($userPath -notlike "*$pyRoot*") {
+    [Environment]::SetEnvironmentVariable(
+        "Path",
+        "$userPath;$pyRoot;$pyRoot\Scripts",
+        "User"
+    )
+}
+
+# Refresh PATH in current session
+$env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
+            [Environment]::GetEnvironmentVariable("Path", "User")
+```
+
+Then verify:
+
+```powershell
+py -3.12 --version
+```
+
+### 3) Allow local project scripts (one-time)
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+### 4) Initialize the project
+
+From repo root:
+
+```powershell
+.\build-helper.ps1 init
+```
+
+This creates `.venv`, installs dependencies, and registers the Jupyter kernel.
+
+### 5) Start JupyterLab
+
+```powershell
+.\build-helper.ps1 start
+```
+
+### 6) Optional: install launcher shortcuts
+
+```powershell
+.\build-helper.ps1 launcher
+```
+
+This creates Start Menu and Desktop shortcuts for one-click startup.
+
+### Quick Troubleshooting
+
+- `py` command not found:
+  - Reopen PowerShell after installation.
+  - Confirm Python Launcher was installed.
+  - Use the PATH snippet above.
+- Script blocked by policy:
+  - Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- `.venv` issues:
+  - Delete `.venv` and run `.\build-helper.ps1 init` again.
