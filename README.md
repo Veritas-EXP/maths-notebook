@@ -61,6 +61,48 @@ math-notebook/
 - Linux Mint (or compatible Linux)
 - A modern browser
 
+## Core Python Packages (and Why We Use Them)
+
+This project uses a small set of core packages so students can learn practical math workflows in one place.
+
+- `numpy`
+  - Purpose: fast numerical arrays and core numerical operations.
+  - Typical use: vectors, matrices, and numeric calculations.
+
+- `scipy`
+  - Purpose: scientific tools built on top of NumPy.
+  - Typical use: equation solving, optimization, interpolation, and stats helpers.
+
+- `sympy`
+  - Purpose: symbolic mathematics (exact expressions, not only decimal approximations).
+  - Typical use: simplify/factor expressions, symbolic derivatives and integrals.
+
+- `matplotlib`
+  - Purpose: plotting and graphing.
+  - Typical use: graph functions, visualize data, produce assignment figures.
+
+- `pandas` *(optional but recommended)*
+  - Purpose: table/data handling.
+  - Typical use: statistics datasets and simple data analysis.
+
+- `jupyterlab`
+  - Purpose: the notebook interface students use every day.
+  - Typical use: combine explanations, calculations, and plots in one document.
+
+- `ipykernel`
+  - Purpose: connects the project Python environment to Jupyter.
+  - Typical use: ensures notebooks run with the correct `.venv` packages.
+
+- `ipympl` *(optional)*
+  - Purpose: interactive Matplotlib backend in JupyterLab.
+  - Typical use: zooming and panning graphs during lessons.
+
+### Why this set?
+
+- Covers the full learning loop: calculate, reason symbolically, visualize, and document.
+- Keeps setup lightweight and stable on Linux Mint.
+- Builds skills that transfer to higher-level STEM study.
+
 ## Linux Mint Setup (First Time)
 
 From the project root:
