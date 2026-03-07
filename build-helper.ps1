@@ -15,12 +15,14 @@ Commands:
   init                Create/update .venv and install all dependencies
   start               Start JupyterLab (opens in user-work)
   launcher            Install Windows shortcuts (Desktop + Start Menu)
+  uninstall           Remove local install artifacts (keeps user-work)
   help                Show this help text
 
 Examples:
   .\build-helper.ps1 init
   .\build-helper.ps1 start
   .\build-helper.ps1 launcher
+  .\build-helper.ps1 uninstall
 "@
 }
 
@@ -76,6 +78,12 @@ function Main {
         }
         "launcher" {
             Invoke-SubScript -ScriptName "install-launcher.ps1" -ExtraArgs $rest
+        }
+        "uninstall" {
+            Invoke-SubScript -ScriptName "uninstall.ps1" -ExtraArgs $rest
+        }
+        "remove" {
+            Invoke-SubScript -ScriptName "uninstall.ps1" -ExtraArgs $rest
         }
         "help" {
             Show-Usage
