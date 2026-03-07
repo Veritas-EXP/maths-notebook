@@ -17,12 +17,14 @@ Commands:
   init                Create/update .venv and install all dependencies
   start               Start JupyterLab (opens in user-work)
   launcher            Install desktop app launcher on Linux
+  uninstall           Remove local install artifacts (keeps user-work)
   help                Show this help text
 
 Examples:
   ./build-helper.sh init
   ./build-helper.sh start
   ./build-helper.sh launcher
+  ./build-helper.sh uninstall
 EOF
 }
 
@@ -60,6 +62,9 @@ main() {
       ;;
     launcher|install-launcher)
       run_script "install-launcher.sh" "$@"
+      ;;
+    uninstall|remove)
+      run_script "uninstall.sh" "$@"
       ;;
     help|-h|--help)
       usage
